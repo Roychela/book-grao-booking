@@ -1,0 +1,27 @@
+<html>
+    <head>
+      <title>Booking System</title>
+      <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+      <script src="//code.jquery.com/jquery-1.10.2.js"></script>
+      <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+      <script>
+      $(function() {
+          $( ".dtpick" ).datepicker();
+      });
+
+      </script>
+  
+    </head>
+    <body>
+          <a href="{{ url_for('main.index') }}">Home</a>
+          <a href="{{ url_for('main.meetingbooker')}}">Meetings</a>
+          <a href="{{ url_for('main.book')}}">Book Meeting</a>
+            {% if current_user.is_anonymous %}
+            <a href="{{ url_for('main.login') }}">Login</a>
+            {% else %}
+            <a href="{{ url_for('main.logout')}}">Logout</a>
+            {% endif %}
+        {% block content %} {% endblock %}
+            
+    </body>
+</html>

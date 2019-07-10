@@ -1,0 +1,22 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<h1>Pitch booker:</h1>
+<table border="1" cellpadding=3>
+    <tr>
+        <th>Meeting</th>
+        <th>Pitch</th>
+        <th>Date</th>
+        <th>Time</th>
+    </tr>
+{% for booking in bookings %}
+    <tr>
+        <td>{{ booking.title }}</td>
+        <td>{{ booking.room}}</td
+        <td>{{ booking.booker}}</td> 
+        <td>{{ booking.date}}</td> 
+        <td>{{ booking.time}}</td> 
+    </tr>
+{% endfor %}
+</table>
+{% endblock %}
