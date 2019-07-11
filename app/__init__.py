@@ -10,7 +10,7 @@ from flask_login import LoginManager
 # Instance of LoginManger and using its methods
 login_manager = LoginManager()
 login_manager.session_protection = 'strong'
-login_manager.login_view = 'login'
+login_manager.login_view = 'main.login'
 bootstrap = Bootstrap()
 db = SQLAlchemy()
 

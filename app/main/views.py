@@ -1,7 +1,7 @@
 from flask import render_template, request, redirect, url_for, abort, flash
 from . import main
 from werkzeug.urls import url_parse
-from .forms import RegistrationForm, LoginForm, BookmeetingForm, RoomavailableForm, RoomoccupationForm
+from .forms import RegistrationForm, LoginForm, BookmeetingForm, RoomavailableForm, RoomoccupationForm, CancelbookingForm
 from flask_login import current_user, login_user, logout_user, login_required
 from app.models import *
 from app import db, create_app
@@ -105,7 +105,7 @@ def book():
         db.session.commit()
         flash('Booking success!')
         return redirect(url_for('main.index'))
-    return render_template('book.html',title='Book Meeting',form=form)
+    return render_template('book.html',title='Book Pitch',form=form)
 
 @main.route('/roomavailable',methods=['GET','POST'])
 def roomavailable():
@@ -121,8 +121,8 @@ def roomavailable():
         for room in rooms:
             if room not in roomsOccupied:
                 roomsavailable.append(room)
-        return render_template('roomavailablelist.html',title='Room available',rooms=roomsavailable)
-    return render_template('roomavailable.html',title='Room availability check',form=form)
+        return render_template('roomavailablelist.html',title='Pitch available',rooms=roomsavailable)
+    return render_template('roomavailable.html',title='Pitch availability check',form=form)
 
 
 
@@ -155,7 +155,36 @@ def roomoccupation():
     return render_template('roomoccupation.html',title='Room Occupation Status',form=form)
 
 
+@main.route('/cancelbooking',methods=['GET','POST'])
+@login_required
+def cancelbooking():
+    if not current_user.is_authenticated:
+        flash('Please Log in to cancel booking')
+        return redirect(url_for('main.login')) 
+    
+    form=CancelbookingForm()
+    if form.validate_on_submit():
+        meeting=Booking.query.filter_by(id=form.ids.data).first()
 
+        if meeting.date<=datetime.now():
+            flash(f'Past booking cannot be canceled')
+            return redirect(url_for('main.cancelbooking'))
+        
+        # participants_user=Participants_user.query.filter_by(meeting=meeting.title).all()
+        # for part in participants_user:
+        #     db.session.delete(part)
+        # participants_partner=Participants_partner.query.filter_by(meeting=meeting.title).all()
+        # for part in participants_partner:
+        #     db.session.delete(part)
+        
+        # costlog=CostLog.query.filter_by(title=meeting.title).first()
+        # db.session.delete(costlog)
+        
+        db.session.delete(meeting)
+        db.session.commit()
+        flash(f'Booking {meeting.title} successfully deleted! ')
+        return redirect(url_for('main.index'))
+    return render_template('cancelbooking.html',title='Cancel Booking',form=form)
 
 
 
